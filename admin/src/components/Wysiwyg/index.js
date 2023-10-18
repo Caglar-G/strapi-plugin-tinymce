@@ -24,12 +24,10 @@ const Wysiwyg = ({
     const { formatMessage } = useIntl();
     const [mediaLibVisible, setMediaLibVisible] = useState(false);
 
-    
-
     const handleToggleMediaLib = () => setMediaLibVisible((prev) => !prev);
 
     const handleChangeAssets = (assets) => {
-        //let newValue = value ? value : "";
+        let newValue = value ? value : "";
 
         assets.map((asset) => {
             
