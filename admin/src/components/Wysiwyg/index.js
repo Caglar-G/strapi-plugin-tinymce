@@ -8,6 +8,8 @@ import Landscape from "@strapi/icons/Landscape";
 import MediaLib from "../MediaLib";
 import Editor from "../Editor";
 import { useIntl } from "react-intl";
+import mammoth  from "mammoth/mammoth.browser";
+
 
 const Wysiwyg = ({
     name,
@@ -22,12 +24,16 @@ const Wysiwyg = ({
     const { formatMessage } = useIntl();
     const [mediaLibVisible, setMediaLibVisible] = useState(false);
 
+    
+
     const handleToggleMediaLib = () => setMediaLibVisible((prev) => !prev);
 
     const handleChangeAssets = (assets) => {
-        let newValue = value ? value : "";
+        //let newValue = value ? value : "";
 
         assets.map((asset) => {
+            
+           
             if (asset.mime.includes("image")) {
                 const imgTag = `<p><img src="${asset.url}" alt="${asset.alt}"></img></p>`;
                 newValue = `${newValue}${imgTag}`;
@@ -36,9 +42,27 @@ const Wysiwyg = ({
                 const videoTag = `<video><source src="${asset.url}" alt="${asset.alt}"</source></video>`;
                 newValue = `${newValue}${videoTag}`;
             }
+            if (asset.mime.includes("word")) {
+                fetch( asset.url)
+                .then( r => r.arrayBuffer() )
+                .then( buffer => { // note this is already an ArrayBuffer
+                    mammoth.convertToHtml({arrayBuffer: buffer})
+                    .then(function(result){
+                        var html = result.value; // The generated HTML
+                        var messages = result.messages; // Any messages, such as warnings during conversion
+                        debugger;
+                        newValue = `${newValue}${html}`;
+                        onChange({ target: { name, value: newValue } });
+                    })
+                    .catch(function(error) {
+                        console.error(error);
+                    });
+                });
+
+              
+            }
         });
 
-        onChange({ target: { name, value: newValue } });
         handleToggleMediaLib();
     };
 
@@ -67,6 +91,14 @@ const Wysiwyg = ({
                 >
                     Media library
                 </Button>
+                <Button
+                    startIcon={<Landscape />}
+                    variant="secondary"
+                    fullWidth
+                    onClick={handleToggleMediaLib}
+                >
+                    Add Docx
+                </Button>
                 <Editor
                     disabled={disabled}
                     name={name}
@@ -89,6 +121,11 @@ const Wysiwyg = ({
                 onChange={handleChangeAssets}
                 onToggle={handleToggleMediaLib}
             />
+            <style>{"\
+                .tox-notification{\
+                    display: none !important;\
+                }\
+            "}</style>
         </>
     );
 };

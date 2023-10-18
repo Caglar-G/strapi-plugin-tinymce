@@ -18,7 +18,8 @@
     "kind": "plugin"
   },
   "dependencies": {
-    "@tinymce/tinymce-react": "4.2.0"
+    "@tinymce/tinymce-react": "4.2.0",
+    "mammoth": "^1.6.0"
   },
   "peerDependencies": {
     "@strapi/strapi": "^4.0.0"

@@ -3,6 +3,7 @@ import pluginPkg from "../../package.json";
 import pluginId from "./pluginId";
 import Initializer from "./components/Initializer";
 import Wysiwyg from "./components/Wysiwyg";
+import MyCompo from "./components/MyCompo";
 import { getTrad } from "./utils";
 import pluginPermissions from "./permissions";
 
@@ -42,7 +43,12 @@ export default {
         });
     },
 
-    bootstrap(app) {},
+    bootstrap(app) {
+        app.injectContentManagerComponent('editView', 'right-links', {
+            name: 'strapi-plugin-tinymce-my-compo',
+            Component: MyCompo,
+        });
+    },
     async registerTrads({ locales }) {
         const importedTrads = await Promise.all(
             locales.map((locale) => {
